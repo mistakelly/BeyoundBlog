@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+<!-- prettier-ignore -->
+{% block style %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/style.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/home.css') }}"
+/>
+{% endblock %}
+<!-- prettier-ignore -->
+{% block title %} 
+    Flask-Blog Home page
+ {% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
+
+<section class="home-section">
+  <div class="home-container">
+
+  <article class="home-article">
+    {% for post in all_posts %}
+      <main class="home-main">
+        <div class="home-main-div">
+          <h4>{{ post.author.username }} <a href=""></a></h4>
+          <p>{{ post.date_posted.strftime('%b %d, %Y') }}</p>
+        </div>
+        <div class="post-div">
+          <h1>{{ post.title }}</h1>
+          <p>{{ post.content }}</p>
+        </div>
+        {% if post.author == current_user %}
+          <div class="cta">
+            <a href="{{ url_for('edit_post', post_id=post.id)}}" class="edit-btn">Edit</a>
+
+              <!-- retrieve the post id as data attribute <used js to dynamically construct route> -->
+            <button class="delete-btn" data-post-id="{{ post.id }}">Delete</button>
+        </div>
+        {% endif %}
+      </main>
+      {% endfor %}
+  </article>
+
+
+  <div class="delete-modal none">
+    <div class="delete-title">
+      <h2>Are you sure you want to delete post</h2>
+      <button class="cancel-delete-modal"><i class="fa fa-times"></i></button>
+    </div>
+
+    <p>This post will be permanently removed, and will be unrecoverable.</p>
+
+    <!-- Code to submit this form to the delete route with the post_id is in javascript -->
+    <div class="delete-cta">
+      <form method="post" class="delete_form">
+        <button type="button" class="cancel-delete-modal">Cancel</button>
+        <button type="submit" class="confirm-delete-btn">Confirm</button>
+      </form>
+    </div>
+
+  </div>
+  
+
+  <aside class="aside-content">
+    <h1>Our Sidebar</h1>
+    <p>Latest Post</p>
+    <p>Trending Post</p>
+    <p>Tech related Post</p>
+  </aside>
+</div>
+</section>
+{% endblock %}
+

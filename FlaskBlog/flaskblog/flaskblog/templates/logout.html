@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<!-- prettier-ignore -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block title %}
+{% if title %}
+    logout
+{% else %}
+    {{ title }}
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+<section class="login-section">
+<form action="/logout" method="POST" class="login-form" novalidate>
+    <h2>Logout Form</h2>
+    {{ form.hidden_tag() }}
+    <div>
+      {{ form.email.label }}
+      {% if form.email.errors %}
+      {{ form.email(id="input-border-error") }}
+        {% for form_error in form.email.errors %}
+          <p class="form-error-message"> {{ form_error}} </p>
+          {% endfor %}
+        {% else %}
+        {{ form.email() }}
+        {% endif %}
+    </div>
+    <div>
+      {{ form.password.label }}
+        {% if form.password.errors %}
+          {{ form.password(id="input-border-error") }}
+          {% for form_error in form.password.errors %}
+          <p class="form-error-message"> {{ form_error }} </p>
+        {% endfor %}
+      {% else %}
+      {{ form.password() }}
+      {% endif %}
+    </div>
+    <div class="remember-me">
+      <input type="checkbox" id="remember" name="remember" />
+      <label class="remember-label" for="remember">Remember Me</label>
+    </div>
+    <div>
+      {{ form.logout(class_='login-btn') }}
+    </div>
+    <div>
+      <a href="/forgot_password">Forgot Password?</a>
+    </div>
+  </form>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</section>
+{% endblock %}

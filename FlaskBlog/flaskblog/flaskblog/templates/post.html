@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block style %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/style.css') }}"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/home.css') }}"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/post.css') }}"
+/>
+{% endblock %}
+
+{% block content %}
+<section class="post-section">
+    <div class="post-container">
+        <form action="/post/new" method="post" class="post-article" novalidate>
+            {{ form.hidden_tag() }}
+            <h2>New Post</h2>
+            <div class="form-title">
+                {{ form.title.label }}
+                    {% if form.title.errors %}
+                        {{ form.title(id='input-border-error') }}
+                        {% for error in form.title.errors %}
+                            <p class="form-error-message ">{{ error }}</p>
+                        {% endfor %}
+                    {% else %}
+                        {{ form.title() }}
+                    {% endif %}
+            </div>
+           
+            <div class="form-content">
+                {{ form.content.label }}
+                {% if form.content.errors %}
+                    {{ form.content(id='input-border-error') }}
+                    {% for error in form.content.errors %}
+                        <p class="form-error-message ">{{ error }}</p>
+                    {% endfor %}
+                {% else %}
+                    {{ form.content() }}
+                {% endif %}
+            </div>
+
+            <div class="form-content">
+                {{ form.post(class='post-btn') }}
+            </div>
+        </form>
+
+    
+  
+        <aside class="aside-content">
+        <h1>Our Sidebar</h1>
+        <p>Latest Post</p>
+        <p>Trending Post</p>
+        <p>Tech related Post</p>
+        </aside>
+
+
+       
+    </div>
+
+  </section>
+{% endblock %}
