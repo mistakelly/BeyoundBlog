@@ -1,0 +1,208 @@
+/* HEADER */
+header {
+    margin-bottom: 0;
+}
+
+/* HOME SECTION */
+
+
+.home-container{
+    display: flex;
+    justify-content: space-between;
+    width: 63%;
+    align-items: center;
+    margin: 2rem auto;
+}
+
+.home-article {
+    width: 60%;
+}
+
+
+.home-main {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #ccc;
+    padding: 1.5rem;
+    color: black;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.home-main-div {
+    display: flex;
+    gap: 1rem;
+    color: #ccc;
+    font-weight: 800;
+    border-bottom: 1px solid #ccc;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+}
+
+.home-main-div h4 {
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+.home-main-div p {
+    /* font-size: 1.5re; */
+    font-weight: 100;
+}
+
+.post-div {
+    font-weight: bolder;
+    font-size: 1rem;
+    color: rgb(7, 4, 4);
+}
+
+.post-div h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.post-div p {
+    font-size: 1.4rem;
+    color: #11345a;
+    font-weight: 400;
+    white-space: pre-line;
+    /* letter-spacing: .2rem; */
+}
+
+/* ASIDE BAR */
+.aside-content {
+    padding: 1rem;
+    color: black;
+    border: 1px solid #ccc;
+    width: 36%;
+    align-self: flex-start;
+}
+
+.aside-content p {
+    border: 1px solid #ccc;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #ccc;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.aside-content h1 {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+}
+
+/* CALL TO ACTION */
+.cta {
+    margin-top: 2rem;
+    font-size: 2rem;
+}
+
+.cta a {
+    text-decoration: none;
+    margin-right: 1rem;
+}
+
+.edit-btn {
+    color: aqua;
+}
+
+.delete-btn {
+    color: red;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+/* DELETE MODAL */
+.delete-modal {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 40%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+}
+
+.delete-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-title h2 {
+    font-size: 2rem;
+}
+
+.delete-modal p {
+    margin-top: 2rem;
+    font-size: 1.4rem;
+}
+
+.delete-cta {
+    align-self: flex-end;
+    margin-top: 2rem;
+}
+
+.delete-cta a {
+    text-decoration: none;
+    background: red;
+    font-size: 1.4rem;
+    padding: 1rem 1.4rem;
+    border-radius: 5px;
+    margin-left: 1rem;
+    color: white;
+}
+
+.delete-cta button {
+    font-size: 1.4rem;
+    padding: 1rem 1.4rem;
+    border-radius: 5px;
+    border: 2px solid #eee;
+}
+
+.delete-cta a:hover {
+    cursor: pointer;
+    background: rgba(224, 69, 69, 0.502);
+}
+
+.delete-cta button:hover {
+    cursor: pointer;
+}
+
+.confirm-delete-btn{
+    background: red;
+}
+
+.none {
+    display: none;
+}
+
+.cancel-delete-modal {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.link-btn{
+    font-size: 1.4rem;
+    border: 1px solid  aqua;;
+    text-decoration: none;
+    padding: .4rem 1rem;
+    color: black;
+    
+}
+
+.link-btn-active{
+    background: aqua;
+    color: white;
+
+}

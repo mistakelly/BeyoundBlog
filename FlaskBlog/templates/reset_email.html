@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+<!-- prettier-ignore -->
+
+{% block title %}
+    Email confirmation
+{% endblock %}
+
+
+{% block style %}
+<!-- prettier-ignore -->
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/style.css') }}"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/register.css') }}"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/reset_password.css') }}"
+/>
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
+
+<!-- prettier-ignore -->
+<section class="register-section">
+    
+  <form action="{{ url_for ('send_email_link') }}" method="POST", class="register-form-container", novalidate>
+      <h2>Enter your email</h2>
+      {{ form.hidden_tag() }}
+      <div class="register-form-content">
+        <div>
+          {{ form.email.label }}
+          {% if form.email.errors %}
+            {{ form.email(id="input-border-error") }}
+            {% for error in form.email.errors %}
+              <p class="form-error-message">{{ error }}</p>
+            {% endfor %}
+          {% else %}
+            {{ form.email() }}
+          {% endif %}
+        </div>
+            <div>
+                {{ form.reset_email_link(class='reset-btn') }}
+            </div>
+      </div>
+    </form>
+    
+</section>
+{% endblock %}
+<!-- passwords?q=kud1 -->
