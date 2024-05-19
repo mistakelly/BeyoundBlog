@@ -1,13 +1,23 @@
-from flask import blueprints, redirect, flash, url_for, render_template,session, request
-from flask_login import current_user,logout_user, login_user, login_required
-from flaskblog.forms import Register_Form, Login_Form, Update_Account_Form
-from flaskblog import bcrypt, app
-from flaskblog.models import User, Post,db
+from flask import Blueprint, redirect, flash, url_for, render_template, session, request, current_app
+from flask_login import current_user, logout_user, login_user, login_required
 from werkzeug.utils import secure_filename
 from uuid import uuid4
 import os
+from flaskblog.users.forms import (
+    Register_Form,
+    Login_Form,
+    Update_Account_Form,
+    Reset_Request_Form,
+    Reset_Password,
+)
+from flaskblog.users.utils import send_email
+from flaskblog.models import User
+from flaskblog import bcrypt, db
 
-users = blueprints('users', __name__)
+
+users = Blueprint("users", __name__)
+
+
 # User Registration route
 @users.route("/register", strict_slashes=False, methods=["GET", "POST"])
 def register_page():
@@ -26,7 +36,7 @@ def register_page():
         db.session.close()
         flash(f"Account Created for {form.username.data}", "success")
 
-        return redirect(url_for("login_page"))
+        return redirect(url_for("users.login_page"))
     return render_template("register.html", form=form)
 
 
@@ -59,7 +69,7 @@ def login_page():
                 f"Success! You're logged in and ready to go, {user.username}", "success"
             )
 
-            return redirect(next) if next else redirect(url_for("index_page"))
+            return redirect(next) if next else redirect(url_for("main.index_page"))
 
         else:
             flash("Login Unsuccessful. Please Check email or password", "error")
@@ -88,7 +98,7 @@ def account_page():
 
             random_filename = f"{uuid4()}{file_ext}"
 
-            profile_pic_ = os.path.join(app.config["UPLOAD_FOLDER"], random_filename)
+            profile_pic_ = os.path.join(current_app.config["UPLOAD_FOLDER"], random_filename)
             form.profile_pic.data.save(profile_pic_)
             current_user.image_file = random_filename
         try:
@@ -107,5 +117,68 @@ def account_page():
 @users.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("index_page"))
+    return redirect(url_for("main.index_page"))
 
+
+# Send TOTP for reseting email.
+@users.route("/password/reset/", methods=["GET", "POST"])
+def send_email_link():
+    form = Reset_Request_Form()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            user = db.session.query(User).filter_by(email=form.email.data).first()
+            print(user)
+            if user:
+                # try:
+                send_email(user)
+
+                flash(
+                    "Email sent successfully!, follow link to reset your password",
+                    category="success",
+                )
+                # except Exception as e:
+                # flash(f"Failed to send email: {e}", category="error")
+
+                return redirect(url_for("users.send_email_link"))
+            else:
+                flash("Email does not exist in our system", category="error")
+
+    return render_template("reset_email.html", form=form)
+
+
+# Password Reset
+@users.route("/password/reset/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    form = Reset_Password()
+    user = User.validate_token(token, expire_sec=300)
+
+    if request.method == "POST" and form.validate_on_submit():
+        # user variable would be None if the time set on the link expires.
+        if user is None:
+            flash(
+                "Error: The provided token is either invalid or has expired",
+                category="error",
+            )
+            return redirect(url_for("users.send_email_link"))
+
+        #  hash user password
+        user.password = bcrypt.generate_password_hash(form.password.data).decode(
+            "utf-8"
+        )
+
+        db.session.commit()
+        flash(
+            "Your password has been successfully reset. You can now log in with your new password.",
+            category="success",
+        )
+
+        # redirect user to login page
+        return redirect(url_for("users.login_page"))
+
+    # render reset password template on GET REQUEST.
+    return render_template(
+        "reset_password.html",
+        form=form,
+        legend_title="Reset your password",
+        title="Password reset",
+    )

@@ -2,31 +2,43 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_sqlalchemy import SQLAlchemy
 from flaskblog.config import Config
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase
 
-# Initialize extensions
-db = SQLAlchemy()
+
+class Base(DeclarativeBase):
+    pass
+
+
+db = SQLAlchemy(model_class=Base)
+
+# initialize mail instance.
+mail = Mail()
+# Initialize extension
 bcrypt = Bcrypt()
 login_manager = LoginManager()
-mail = Mail()
+login_manager.login_view = 'users.login_page'
+login_manager.login_message_category = "info"
 
 def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(Config)
 
-    # Initialize extensions with the app instance
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
 
-    # Configure Flask-Login
-    login_manager.login_view = "users.login_page"
-    login_manager.login_message_category = "info"
-
-    # Register blueprints
+    # register blueprints
     from flaskblog.users.routes import users
-    app.register_blueprint(users, url_prefix='/users')
+    from flaskblog.posts.routes import posts
+    from flaskblog.main.routes import main
+    from flaskblog.errors.handler import errors
+
+    app.register_blueprint(users)
+    app.register_blueprint(posts)
+    app.register_blueprint(main)
+    app.register_blueprint(errors)
 
     return app

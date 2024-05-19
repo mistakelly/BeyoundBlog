@@ -2,15 +2,11 @@ from itsdangerous import URLSafeTimedSerializer as serializer
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
-from flaskblog import app, login_manager
-from flask_login import LoginManager, UserMixin
+from flaskblog import login_manager, db
+from flask_login import UserMixin
+from flask import current_app
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-db = SQLAlchemy(app, model_class=Base)
 
 @login_manager.user_loader
 def load_user(user_id :str):
@@ -33,7 +29,7 @@ class User(db.Model, UserMixin):
     posts = db.relationship("Post", backref="author", lazy=True)
 
     def get_token(self):
-        serialize = serializer(app.config['SECRET_KEY'])
+        serialize = serializer(current_app.config['SECRET_KEY'])
 
         data = {'user_id': self.id}
 
@@ -41,7 +37,7 @@ class User(db.Model, UserMixin):
     
     @staticmethod
     def validate_token(token, expire_sec=30):
-        serialize = serializer(app.config['SECRET_KEY'])
+        serialize = serializer(current_app.config['SECRET_KEY'])
 
         try:
             user_id = serialize.loads(token, max_age=expire_sec)['user_id']
@@ -50,15 +46,9 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
         # return db.session.query(User).filter_by(id=confirm_token['user_id'])
 
-
-
-
-
-
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
     
-
 
 class Post(db.Model):
     __tablename__ = "posts"
@@ -75,6 +65,4 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}') {self.content} "
 
-with app.app_context():
-    db.create_all()
 

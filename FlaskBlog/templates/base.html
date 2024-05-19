@@ -23,21 +23,21 @@
       <ul class="menu-list">
         <li>FLASK Blog</li>
         <li>
-          <a href="{{ url_for('index_page') }}">Home</a>
+          <a href="{{ url_for('main.index_page') }}">Home</a>
         </li>
         <li>
-          <a href="{{ url_for('about_page') }}">About</a>
+          <a href="{{ url_for('main.about_page') }}">About</a>
         </li>
       </ul>
 
       <ul class="user-action">
         {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('post') }}">New Post</a></li>
-          <li><a href="{{ url_for('account_page') }}">Account</a></li>
-          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        <li><a href="{{ url_for('posts.post') }}">New Post</a></li>
+          <li><a href="{{ url_for('users.account_page') }}">Account</a></li>
+          <li><a href="{{ url_for('users.logout') }}">Logout</a></li>
         {% else %}
-          <li><a href="{{ url_for('login_page') }}">Sign in</a></li>
-          <li><a href="{{ url_for('register_page') }}">Sign up</a></li>
+          <li><a href="{{ url_for('users.login_page') }}">Sign in</a></li>
+          <li><a href="{{ url_for('users.register_page') }}">Sign up</a></li>
         {% endif %}
       </ul>
     </nav>

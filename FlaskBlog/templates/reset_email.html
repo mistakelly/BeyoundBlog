@@ -30,7 +30,7 @@
 <!-- prettier-ignore -->
 <section class="register-section">
     
-  <form action="{{ url_for ('send_email_link') }}" method="POST", class="register-form-container", novalidate>
+  <form action="{{ url_for ('users.send_email_link') }}" method="POST", class="register-form-container", novalidate>
       <h2>Enter your email</h2>
       {{ form.hidden_tag() }}
       <div class="register-form-content">

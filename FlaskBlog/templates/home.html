@@ -36,7 +36,7 @@
         </div>
         {% if post.author == current_user %}
           <div class="cta">
-            <a href="{{ url_for('edit_post', post_id=post.id)}}" class="edit-btn">Edit</a>
+            <a href="{{ url_for('posts.edit_post', post_id=post.id)}}" class="edit-btn">Edit</a>
 
               <!-- retrieve the post id as data attribute <used js to dynamically construct route> -->
             <button class="delete-btn" data-post-id="{{ post.id }}">Delete</button>
@@ -48,9 +48,9 @@
       {% for page_num in all_posts.iter_pages() %}
         {% if page_num %}
           {% if page_num == all_posts.page %}
-            <a href="{{ url_for('index_page', page=page_num)}}" class="edit-btn link-btn link-btn-active">{{ page_num }}</a>
+            <a href="{{ url_for('main.index_page', page=page_num)}}" class="edit-btn link-btn link-btn-active">{{ page_num }}</a>
           {% else %}
-          <a href="{{ url_for('index_page', page=page_num)}}" class="edit-btn link-btn">{{ page_num }}</a>
+          <a href="{{ url_for('main.index_page', page=page_num)}}" class="edit-btn link-btn">{{ page_num }}</a>
           {% endif %}
         {% else %}
         <!-- display elipses if no page is found -->
