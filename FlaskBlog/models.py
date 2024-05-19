@@ -9,6 +9,7 @@ from flask_login import LoginManager, UserMixin
 class Base(DeclarativeBase):
     pass
 
+
 db = SQLAlchemy(app, model_class=Base)
 
 @login_manager.user_loader

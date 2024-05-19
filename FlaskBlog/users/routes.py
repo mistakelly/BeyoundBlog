@@ -1,45 +1,15 @@
-# Imports
-from flask import (
-    session,
-    url_for,
-    render_template,
-    redirect,
-    flash,
-    get_flashed_messages,
-    session,
-    request,
-    render_template_string,
-    abort,
-)
-from flaskblog.forms import (
-    Register_Form,
-    Login_Form,
-    Update_Account_Form,
-    NEW_POST,
-    EDIT_POST,
-)
+from flask import blueprints, redirect, flash, url_for, render_template,session, request
+from flask_login import current_user,logout_user, login_user, login_required
+from flaskblog.forms import Register_Form, Login_Form, Update_Account_Form
 from flaskblog import bcrypt, app
-from flaskblog.models import User, Post, db
-from flask_login import login_user, logout_user, login_required, current_user
+from flaskblog.models import User, Post,db
 from werkzeug.utils import secure_filename
-import os
 from uuid import uuid4
+import os
 
-
-@app.route("/")
-@app.route("/home", strict_slashes=False)
-def index_page():
-    all_posts = Post.query.all()
-    return render_template("home.html", all_posts=all_posts)
-
-
-@app.route("/about", strict_slashes=False)
-def about_page():
-    return render_template("about.html")
-
-
-# User Registration route.
-@app.route("/register", strict_slashes=False, methods=["GET", "POST"])
+users = blueprints('users', __name__)
+# User Registration route
+@users.route("/register", strict_slashes=False, methods=["GET", "POST"])
 def register_page():
     if current_user.is_authenticated:
         return redirect("index_page")
@@ -61,7 +31,7 @@ def register_page():
 
 
 # User Login Route
-@app.route("/login", strict_slashes=False, methods=["GET", "POST"])
+@users.route("/login", strict_slashes=False, methods=["GET", "POST"])
 def login_page():
     if current_user.is_authenticated:
         return redirect("index_page")
@@ -101,7 +71,7 @@ def login_page():
     return render_template("login.html", form=form)
 
 
-@app.route("/account", methods=["GET", "POST"])
+@users.route("/account", methods=["GET", "POST"])
 @login_required
 def account_page():
     form = Update_Account_Form()
@@ -134,66 +104,8 @@ def account_page():
 
 
 # logout route
-@app.route("/logout")
+@users.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("index_page"))
 
-
-# # # # # # # # # # # # # # # # #
-@app.route("/post/new", methods=["GET", "POST"])
-@login_required
-def post():
-    form = NEW_POST()
-    if form.validate_on_submit():
-        cleaned_content = form.content.data
-        post = Post(
-            title=form.title.data,
-            content=cleaned_content.strip(),
-            user_id=current_user.id,
-            author=current_user,
-        )
-
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for("index_page", post_id=post.id))
-   
-
-    return render_template("post.html", form=form)
-
-
-@app.route("/post/<int:post_id>/edit", methods=["GET", "POST"])
-@login_required
-def edit_post(post_id):
-    form = EDIT_POST()
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    post_id = post.id
-    if form.validate_on_submit():
-        try:
-            post.title = form.title.data
-            cleaned_content = form.content.data
-            post.content = cleaned_content.strip()
-            db.session.commit()
-            return redirect(url_for("index_page", post_id=post_id))
-        except Exception as e:
-            flash(f"An error occured {e}")
-
-    if request.method == "GET":
-        form.title.data = post.title
-        form.content.data = post.content
-
-    return render_template("edit_post.html", form=form, post_id=post_id)
-
-
-@app.route("/delete/<int:post_id>", methods=["GET", "POST"])
-def delete_post(post_id):
-
-    post = Post.query.get_or_404(post_id)
-
-    db.session.delete(post)
-
-    db.session.commit()
-
-    return redirect(url_for("index_page"))

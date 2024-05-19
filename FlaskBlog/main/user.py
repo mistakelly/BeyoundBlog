@@ -1,6 +1,7 @@
 from flask import url_for
 from flask_mail import Message
 from flaskblog import mail
+import os
 
 def send_email(user):
     # construct TOTP.
